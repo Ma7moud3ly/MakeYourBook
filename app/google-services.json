@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "587767497285",
+    "firebase_url": "https://app-super-novel.firebaseio.com",
+    "project_id": "app-super-novel",
+    "storage_bucket": "app-super-novel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587767497285:android:6210b86cf1c7947555592c",
+        "android_client_info": {
+          "package_name": "com.ma7moud3ly.makeyourbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587767497285-r6nmr52dqd7p79jffemijbof4rf9qe7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqBy3F3cNcCWwWBjCf4VCtIpJbIlOX0ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587767497285-r6nmr52dqd7p79jffemijbof4rf9qe7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587767497285:android:caf1b1623059601455592c",
+        "android_client_info": {
+          "package_name": "com.ma7moud3ly.supernovel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587767497285-r6nmr52dqd7p79jffemijbof4rf9qe7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqBy3F3cNcCWwWBjCf4VCtIpJbIlOX0ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587767497285-r6nmr52dqd7p79jffemijbof4rf9qe7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
