@@ -38,7 +38,6 @@ Make Your Book : The largest library for arabic books and novels in text format 
 <div>
   <img src="play/tablet/img4.png" alt="drawing" width="200"/>
   <img src="play/tablet/img5.png" alt="drawing" width="200"/>
-  <img src="play/tablet/img6.png" alt="drawing" width="200"/>
 </div>
 <br>
 
@@ -49,8 +48,10 @@ Make Your Book : The largest library for arabic books and novels in text format 
 <li>Java</li>
 <li>MVVM architecture</li>
 <li>Data Binding and Live Data</li>
+<li>Dagger 2</li>
 <li>Room Database</li>
-<li>Firebase Storage</li>
+<li>Firebase Realtime database/Storage</li>
+<li>Firebase  Cloud Messaging</li>
 <li>Material components</li>
 
 ### Third parties:

@@ -97,7 +97,13 @@ public class HomeRepository {
                 @Override
                 public void onDataChange(DataSnapshot snapshots) {
                     Home home = new Home();
-                    CONSTANTS.DOWNLOAD_BASE = snapshots.child("constants").child("download_base").getValue().toString();
+                    try {
+                        CONSTANTS.DOWNLOAD_BASE = snapshots.child("constants").child("download_base").getValue().toString();
+                    } catch (Exception e) {
+                        data.setValue(null);
+                        FirebaseDatabase.getInstance().getReference(CONSTANTS.HOME_DIR).keepSynced(false);
+                        return;
+                    }
                     home.authors = authorsSnapshot(snapshots.child("authors").getChildren());
                     home.quotes = authorsSnapshot(snapshots.child("quotes").getChildren());
                     home.collections = homeCollectionSnapshot(snapshots.child("collections").getChildren());

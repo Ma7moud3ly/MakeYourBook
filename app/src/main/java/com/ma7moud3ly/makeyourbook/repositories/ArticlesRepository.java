@@ -74,8 +74,6 @@ public class ArticlesRepository {
             List<Article> list = new ArrayList<>();
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(ARTICLES_DIR);
             myRef.keepSynced(true);
-            myRef.keepSynced(true);
-
             Query query = myRef.orderByKey().limitToFirst(pager.page_size);
             if (!pager.last_key.isEmpty()) query = query.startAt(pager.last_key);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
