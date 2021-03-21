@@ -1,10 +1,12 @@
 package com.ma7moud3ly.makeyourbook.fragments.quotes;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -153,7 +155,7 @@ public class CreateQuoteFragment extends BaseFragment {
             screenshot.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             Bitmap bitmap = screenshot.getDrawingCache();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
             screenshot.setDrawingCacheEnabled(false);
             byte[] byteArray = stream.toByteArray();
             Intent intent = new Intent(getContext(), PreviewActivity.class);

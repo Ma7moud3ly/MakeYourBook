@@ -63,13 +63,13 @@ public class HomeRepository {
             book.author_id = snapshot.child("author_id").getValue().toString();
             book.img = BOOKS_IMGS_DIR + "/" + book.id + ".jpg";
             book.author_img = AUTHORS_IMGS_DIR + "/" + book.author_id + ".jpg";
-            if (snapshot.hasChild("download_link")) {
-                book.is_text = false;
+            book.type = (long) snapshot.child("type").getValue();
+            if (book.type == CONSTANTS.PDF_BOOKS) {
                 book.category = snapshot.child("category").getValue().toString();
                 book.download_link = snapshot.child("download_link").getValue().toString();
                 book.format = snapshot.child("format").getValue().toString();
                 book.size = snapshot.child("size").getValue().toString();
-            } else book.is_text = true;
+            }
 
             list.add(book);
         }
@@ -83,7 +83,6 @@ public class HomeRepository {
             collection.id = snapshot.child("id").getValue().toString();
             collection.title = snapshot.child("title").getValue().toString();
             collection.books = booksSnapshot(snapshot.child("books").getChildren());
-
             list.add(collection);
         }
         return list;
@@ -93,17 +92,12 @@ public class HomeRepository {
     public void read() {
         try {
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(CONSTANTS.HOME_DIR);
+            if (App.newVersion) myRef.keepSynced(true);
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshots) {
                     Home home = new Home();
-                    try {
-                        CONSTANTS.DOWNLOAD_BASE = snapshots.child("constants").child("download_base").getValue().toString();
-                    } catch (Exception e) {
-                        data.setValue(null);
-                        FirebaseDatabase.getInstance().getReference(CONSTANTS.HOME_DIR).keepSynced(false);
-                        return;
-                    }
+                    CONSTANTS.DOWNLOAD_BASE = snapshots.child("constants").child("download_base").getValue().toString();
                     home.authors = authorsSnapshot(snapshots.child("authors").getChildren());
                     home.quotes = authorsSnapshot(snapshots.child("quotes").getChildren());
                     home.collections = homeCollectionSnapshot(snapshots.child("collections").getChildren());

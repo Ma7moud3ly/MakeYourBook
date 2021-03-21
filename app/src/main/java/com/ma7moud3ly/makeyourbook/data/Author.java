@@ -13,6 +13,7 @@ public class Author extends MyData {
     public String id, name, img;
     public List<Book> txt_books;
     public List<Book> pdf_books;
+    public List<Book> e_books;
 
     public Author() {
     }

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import androidx.lifecycle.MutableLiveData;
 
 
-public class ReaderRepository {
+public class TextReaderRepository {
 
     private Context context;
     public MutableLiveData<ArrayList<String>> data = new MutableLiveData<>();
@@ -29,7 +29,7 @@ public class ReaderRepository {
 
 
     @Inject
-    public ReaderRepository(Context context) {
+    public TextReaderRepository(Context context) {
         this.context = context;
     }
 

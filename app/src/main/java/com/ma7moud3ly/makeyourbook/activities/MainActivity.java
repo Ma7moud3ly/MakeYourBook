@@ -12,6 +12,7 @@ import com.ma7moud3ly.makeyourbook.databinding.ActivityMainBinding;
 import com.ma7moud3ly.makeyourbook.di.DaggerActivityGraph;
 import com.ma7moud3ly.makeyourbook.fragments.HomeFragment;
 import com.ma7moud3ly.makeyourbook.fragments.library.LibrarySearchFragment;
+import com.ma7moud3ly.makeyourbook.util.CONSTANTS;
 
 public class MainActivity extends BaseActivity {
     public ActivityMainBinding binding;
@@ -55,13 +56,16 @@ public class MainActivity extends BaseActivity {
         String ref = appLinkData.getPath().replace(id, "").replace("/", "");
         if (ref.equals("author") && !id.isEmpty()) {
             uiState.openAuthor(new View(this), id);
-        } else if (ref.equals("text-book") || ref.equals("pdf-book")) {
+        } else if (ref.equals("e-book") || ref.equals("text-book") || ref.equals("pdf-book")) {
             Intent bookIntent = new Intent(this, BookActivity.class);
             bookIntent.putExtra("book_id", id);
             bookIntent.putExtra("book_id", id);
             Book book = new Book();
             book.id = id;
-            book.is_text = ref.equals("text-book") ? true : false;
+            if (ref.equals("e-book")) book.type = CONSTANTS.E_BOOKS;
+            else if (ref.equals("text-book")) book.type = CONSTANTS.TXT_BOOKS;
+            else if (ref.equals("pdf-book")) book.type = CONSTANTS.PDF_BOOKS;
+            ;
             uiState.bookDetails(new View(this), book);
         } else if (ref.equals("quote")) {
             uiState.quotes(new View(this));

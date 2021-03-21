@@ -1,16 +1,21 @@
 package com.ma7moud3ly.makeyourbook.observables;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.ma7moud3ly.makeyourbook.App;
@@ -32,6 +37,7 @@ import com.ma7moud3ly.makeyourbook.fragments.authors.AboutAuthorFragment;
 import com.ma7moud3ly.makeyourbook.fragments.authors.AuthorsFragment;
 import com.ma7moud3ly.makeyourbook.fragments.library.ArticlesFragment;
 import com.ma7moud3ly.makeyourbook.fragments.library.FavBooksFragment;
+import com.ma7moud3ly.makeyourbook.fragments.library.LibraryEbookFragment;
 import com.ma7moud3ly.makeyourbook.fragments.library.LibraryPdfFragment;
 import com.ma7moud3ly.makeyourbook.fragments.library.LibraryTextFragment;
 import com.ma7moud3ly.makeyourbook.fragments.quotes.QuotesFragment;
@@ -43,7 +49,12 @@ import com.ma7moud3ly.makeyourbook.util.CONSTANTS;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableField;
+
+import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.E_BOOKS;
+import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.PDF_BOOKS;
+import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.TXT_BOOKS;
 
 @Singleton
 public class UiState {
@@ -63,7 +74,7 @@ public class UiState {
         showFooter.set(true);
         isHome.set(true);
         showSearch.set(true);
-        searchResults.set(0);
+        searchResults.set(-1);
         library.set(CONSTANTS.LIB_MOST_READ);
     }
 
@@ -92,12 +103,17 @@ public class UiState {
     }
 
     public void library(View view) {
-        ((MainActivity) view.getContext()).navigateTo(new LibraryTextFragment(), null, true);
+        ((MainActivity) view.getContext()).navigateTo(new LibraryEbookFragment(), null, true);
     }
 
 
     public void about(View view) {
         ((MainActivity) view.getContext()).navigateTo(new AboutFragment(), null, true);
+    }
+
+    public void eBooks(View view) {
+        this.library.set(CONSTANTS.LIB_E_BOOKS);
+        ((MainActivity) view.getContext()).navigateTo(new LibraryEbookFragment(), null, true);
     }
 
     public void textBooks(View view) {
@@ -123,9 +139,13 @@ public class UiState {
 
     public void openBook(View v, Book book) {
         Intent intent = new Intent(v.getContext(), ReaderActivity.class);
-        Story story = new Story(book);
-        story.ref = CONSTANTS.BOOKS_DIR;
-        intent.putExtra("story", story.toString());
+        if (book.type == E_BOOKS)
+            intent.putExtra("book", book.toString());
+        else if (book.type == TXT_BOOKS) {
+            Story story = new Story(book);
+            story.ref = CONSTANTS.BOOKS_DIR;
+            intent.putExtra("story", story.toString());
+        }
         v.getContext().startActivity(intent);
     }
 
@@ -155,11 +175,15 @@ public class UiState {
 
     public void bookDetails(View v, Book book) {
         Intent intent = new Intent(v.getContext(), BookActivity.class);
-        if ((book.is_text && book.author_id != null) || book.download_link != null)
+        if (((book.type == TXT_BOOKS || book.type == E_BOOKS) && book.author_id != null) || book.download_link != null)
             intent.putExtra("book", book.toString());
         else {
             intent.putExtra("book_id", book.id);
-            intent.putExtra("ref", book.is_text ? CONSTANTS.TXT_BOOKS_DIR : CONSTANTS.PDF_BOOKS_DIR);
+            String ref = "";
+            if (book.type == E_BOOKS) ref = CONSTANTS.E_BOOKS_DIR;
+            else if (book.type == TXT_BOOKS) ref = CONSTANTS.TXT_BOOKS_DIR;
+            else if (book.type == PDF_BOOKS) ref = CONSTANTS.PDF_BOOKS_DIR;
+            intent.putExtra("ref", ref);
         }
         v.getContext().startActivity(intent);
     }
@@ -167,8 +191,11 @@ public class UiState {
     public void shareBook(View v, Book book) {
         Context context = v.getContext();
         String url;
-        if (book.is_text) url = "https://makeubook.web.app/text-book/" + book.id;
-        else url = "https://makeubook.web.app/pdf-book/" + book.id;
+        String type = "";
+        if (book.type == E_BOOKS) type = "e-book/";
+        else if (book.type == TXT_BOOKS) type = "text-book/";
+        else if (book.type == PDF_BOOKS) type = "pdf-book/";
+        url = "https://makeubook.web.app/" + type + book.id;
         String content = book.name + " - " + book.author + "\n" + url;
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -191,15 +218,18 @@ public class UiState {
     }
 
     public void copyLinkBook(View v, Book book) {
-        String url;
-        if (book.is_text) url = "https://makeubook.web.app/text-book/" + book.id;
-        else url = "https://makeubook.web.app/pdf-book/" + book.id;
+        String type = "";
+        if (book.type == E_BOOKS) type = "e-book/";
+        else if (book.type == TXT_BOOKS) type = "text-book/";
+        else if (book.type == PDF_BOOKS) type = "pdf-book/";
+        String url = "https://makeubook.web.app/" + type + book.id;
         String data = book.name + " - " + book.author + "\n" + url;
         ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("copied", data);
         clipboard.setPrimaryClip(clip);
         App.toast(v.getContext().getString(R.string.book_link_copied));
     }
+
     public void copyLinkBook(View v, Author author) {
         String url = "https://makeubook.web.app/author/" + author.id;
         String data = author.name + "\n" + url;
@@ -244,5 +274,15 @@ public class UiState {
         ((BaseActivity) v.getContext()).navigateTo(new CreateQuoteFragment(), bundle, true);
     }
 
+
+    @BindingAdapter("src")
+    public static void src(ImageView view, long type) {
+        Resources r = view.getContext().getResources();
+        int drawable;
+        if (type == E_BOOKS) drawable = R.drawable.ebook;
+        else if (type == TXT_BOOKS) drawable = R.drawable.text;
+        else drawable = R.drawable.pdf;
+        view.setImageResource(drawable);
+    }
 
 }

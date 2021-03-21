@@ -1,10 +1,12 @@
 package com.ma7moud3ly.makeyourbook.fragments.Reader;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -23,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ma7moud3ly.makeyourbook.App;
 import com.ma7moud3ly.makeyourbook.R;
 import com.ma7moud3ly.makeyourbook.activities.BaseActivity;
 import com.ma7moud3ly.makeyourbook.activities.UserQuotesActivity;
@@ -43,6 +46,7 @@ public class TextReaderFragment extends BaseFragment {
     private TextReaderViewModel model;
     private boolean firstRead = true;
     private int scroll;
+    private Story story;
 
 
     @Override
@@ -50,7 +54,7 @@ public class TextReaderFragment extends BaseFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentTextReaderBinding.inflate(inflater, container, false);
 
-        model = new ViewModelProvider(getActivity(), viewModelFactory).get(TextReaderViewModel.class);
+        model = new ViewModelProvider(this, viewModelFactory).get(TextReaderViewModel.class);
         binding.setUi(readerUiState);
         return binding.getRoot();
 
@@ -64,7 +68,7 @@ public class TextReaderFragment extends BaseFragment {
         restoreSettings();
 
         //observe text
-        model.chapters.observe(getActivity(), chapters -> {
+        model.chapters.observe(this, chapters -> {
             if (chapters.size() == 0) {
                 if (!CheckInternet.isConnected(getContext())) {
                     Toast.makeText(getContext(), getResources().getString(R.string.no_internet_to_download), Toast.LENGTH_LONG).show();
@@ -76,7 +80,7 @@ public class TextReaderFragment extends BaseFragment {
             networkState(CONSTANTS.LOADED);
             binding.pages.setText("" + chapters.size());
 
-            int page = pref.get("page_" + model.story.getValue().id, 0);
+            int page = pref.get("page_" + story.id, 0);
             if (page >= 0 & page < chapters.size())
                 model.page.setValue(page);
         });
@@ -121,7 +125,9 @@ public class TextReaderFragment extends BaseFragment {
             model.page.setValue(textSearch.page);
         });
 
-        model.story.observe(this, story -> {
+        //read text source
+        if (getArguments() != null && getArguments().containsKey("story")) {
+            story = new Story(getArguments().getString("story")).init();
             binding.title.setText(story.title + " - " + story.author);
             if (model.isStorySearch() || firstRead == false) {
                 return;
@@ -129,8 +135,7 @@ public class TextReaderFragment extends BaseFragment {
             scroll = pref.get("scroll" + story.id, 0);
             model.read(story.ref, story.id);
             networkState(CONSTANTS.LOADING);
-        });
-
+        }
 
     }
 
@@ -186,7 +191,6 @@ public class TextReaderFragment extends BaseFragment {
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
             if (item.getItemId() == R.id.save) {
                 Quote quote = new Quote();
-                Story story = model.story.getValue();
                 TextView ed = binding.editor;
                 quote.text = ed.getText().toString().substring(ed.getSelectionStart(), ed.getSelectionEnd());
                 quote.source = story.title;
@@ -212,7 +216,7 @@ public class TextReaderFragment extends BaseFragment {
     }
 
     private void storeSettings() {
-        pref.put("scroll" + model.story.getValue().id, binding.editorLayout.getScrollY());
+        pref.put("scroll" + story.id, binding.editorLayout.getScrollY());
         pref.put("align", readerUiState.textAlignment.get());
         pref.put("text_color", readerUiState.textColor.get());
         pref.put("text_size", readerUiState.getTextSize());
@@ -224,7 +228,7 @@ public class TextReaderFragment extends BaseFragment {
         pref.put("line_spacing", readerUiState.lineSpacing.get());
 
         if (model.page.getValue() != null)
-            pref.put("page_" + model.story.getValue().id, model.page.getValue());
+            pref.put("page_" + story.id, model.page.getValue());
     }
 
     private void restoreSettings() {

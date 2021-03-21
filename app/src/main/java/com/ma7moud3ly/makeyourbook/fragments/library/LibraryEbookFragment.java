@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-public class LibraryTextFragment extends BaseFragment {
+public class LibraryEbookFragment extends BaseFragment {
 
     private FragmentLibraryBinding binding;
     private LibraryRecyclerAdapter adapter;
@@ -32,7 +32,7 @@ public class LibraryTextFragment extends BaseFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentLibraryBinding.inflate(inflater, container, false);
         binding.setUi(uiState);
-        uiState.library.set(CONSTANTS.LIB_TXT_BOOKS);
+        uiState.library.set(CONSTANTS.LIB_E_BOOKS);
         return binding.getRoot();
     }
 
@@ -42,7 +42,7 @@ public class LibraryTextFragment extends BaseFragment {
         initBooksRecycler();
         initPager();
         model = new ViewModelProvider(this, viewModelFactory).get(LibraryViewModel.class);
-        model.ref=CONSTANTS.TXT_BOOKS_DIR;
+        model.ref=CONSTANTS.E_BOOKS_DIR;
         model.items_count.observe(getViewLifecycleOwner(), items_count -> {
             if (items_count == null) return;
             pager.last_page = (int) Math.ceil(items_count * 1.0 / pager.page_size);

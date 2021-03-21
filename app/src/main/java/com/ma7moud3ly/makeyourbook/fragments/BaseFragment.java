@@ -23,6 +23,7 @@ import com.ma7moud3ly.makeyourbook.activities.MainActivity;
 import com.ma7moud3ly.makeyourbook.data.MyPager;
 import com.ma7moud3ly.makeyourbook.di.ViewModelFactory;
 import com.ma7moud3ly.makeyourbook.interfaces.FragmentCallbacks;
+import com.ma7moud3ly.makeyourbook.observables.EbookReaderUi;
 import com.ma7moud3ly.makeyourbook.observables.ReaderUi;
 import com.ma7moud3ly.makeyourbook.observables.UiState;
 import com.ma7moud3ly.makeyourbook.util.CONSTANTS;
@@ -49,6 +50,8 @@ public class BaseFragment extends Fragment implements FragmentCallbacks {
     public UiState uiState;
     @Inject
     public ReaderUi readerUiState;
+    @Inject
+    public EbookReaderUi eReaderUiState;
     public MyPager pager;
 
     @Nullable
@@ -230,7 +233,6 @@ public class BaseFragment extends Fragment implements FragmentCallbacks {
             networkState(CONSTANTS.RETRY);
         } else
             networkState(CONSTANTS.LOADING);
-        //FirebaseDatabase.getInstance().getReference().keepSynced(true);
     }
 
 }

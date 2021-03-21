@@ -77,10 +77,14 @@ public class AboutBookFragment extends BaseFragment {
     private void initBook(Book book) {
         model.isExist(book);
         binding.setBook(book);
-        if (!book.is_text) {
+        if (book.type == CONSTANTS.PDF_BOOKS) {
             binding.download.setText("تحميل : " + book.size + " - " + book.format);
             requireActivity().registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         }
+        String type = "";
+        if (book.type == CONSTANTS.E_BOOKS) type = getString(R.string.book_type_e);
+        else if (book.type == CONSTANTS.TXT_BOOKS) type = getString(R.string.book_type_txt);
+        else if (book.type == CONSTANTS.PDF_BOOKS) type = getString(R.string.book_type_pdf);
     }
 
     private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
@@ -133,7 +137,7 @@ public class AboutBookFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (!model.book.getValue().is_text)
+        if (model.book.getValue().type == CONSTANTS.PDF_BOOKS)
             getActivity().unregisterReceiver(onDownloadComplete);
     }
 }

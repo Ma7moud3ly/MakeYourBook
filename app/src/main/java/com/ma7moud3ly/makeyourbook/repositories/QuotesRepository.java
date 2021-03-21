@@ -48,6 +48,8 @@ public class QuotesRepository {
 
     public void count(String ref) {
         Query query = FirebaseDatabase.getInstance().getReference(QUOTES_DIR).child(ref);
+        if (App.newVersion) query.keepSynced(true);
+        else query.keepSynced(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -94,7 +96,8 @@ public class QuotesRepository {
     public void search(String ref, String query) {
         try {
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(QUOTES_DIR).child(ref);
-            myRef.keepSynced(true);
+            if(App.newVersion)myRef.keepSynced(true);
+            else  myRef.keepSynced(false);
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshots) {

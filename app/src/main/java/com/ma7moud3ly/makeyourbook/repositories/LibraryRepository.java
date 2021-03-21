@@ -1,11 +1,14 @@
 package com.ma7moud3ly.makeyourbook.repositories;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.text.TextUtils;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +31,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.AUTHORS_IMGS_DIR;
 import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.BOOKS_IMGS_DIR;
+import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.E_BOOKS_DIR;
 import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.PDF_BOOKS_DIR;
 import static com.ma7moud3ly.makeyourbook.util.CONSTANTS.TXT_BOOKS_DIR;
 
@@ -49,12 +53,11 @@ public class LibraryRepository {
             book.author = snapshot.child("author").getValue().toString();
             book.author_id = snapshot.child("author_id").getValue().toString();
             book.author_img = AUTHORS_IMGS_DIR + "/" + book.author_id + ".jpg";
-            book.is_text = false;
+            book.type = 12;
             book.category = snapshot.child("category").getValue().toString();
             book.download_link = snapshot.child("download_link").getValue().toString();
             book.format = snapshot.child("format").getValue().toString();
             book.size = snapshot.child("size").getValue().toString();
-
             return book;
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,7 +74,24 @@ public class LibraryRepository {
             book.author = c.child("author").getValue().toString();
             book.author_id = c.child("author_id").getValue().toString();
             book.author_img = AUTHORS_IMGS_DIR + "/" + book.author_id + ".jpg";
-            book.is_text = true;
+            book.type = 11;
+            return book;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Book ebookSnapshotToBook(DataSnapshot c) {
+        try {
+            Book book = new Book();
+            book.id = c.getKey();
+            book.name = c.child("name").getValue().toString();
+            book.img = BOOKS_IMGS_DIR + "/" + book.id + ".jpg";
+            book.author = c.child("author").getValue().toString();
+            book.author_id = c.child("author_id").getValue().toString();
+            book.author_img = AUTHORS_IMGS_DIR + "/" + book.author_id + ".jpg";
+            book.type = 10;
             return book;
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +108,7 @@ public class LibraryRepository {
             if (SearchHelper.in(book.author, query) || SearchHelper.in(book.name, query)) {
                 book.author_id = snapshot.child("author_id").getValue().toString();
                 book.id = snapshot.child("id").getValue().toString();
-                book.is_text = TextUtils.isDigitsOnly(book.id);
+                book.type = (long) snapshot.child("type").getValue();
                 book.img = BOOKS_IMGS_DIR + "/" + book.id + ".jpg";
                 book.author_img = AUTHORS_IMGS_DIR + "/" + book.author_id + ".jpg";
                 list.add(book);
@@ -99,6 +119,8 @@ public class LibraryRepository {
 
     public void count(String ref) {
         Query query = FirebaseDatabase.getInstance().getReference(ref);
+        if (App.newVersion) query.keepSynced(true);
+        else query.keepSynced(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -117,13 +139,20 @@ public class LibraryRepository {
         try {
             List<Book> list = new ArrayList<>();
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(ref);
-            if (ref.equals(TXT_BOOKS_DIR)) myRef.keepSynced(true);
+            if (App.newVersion) myRef.keepSynced(true);
+            else myRef.keepSynced(false);
             Query query = myRef.orderByKey().limitToFirst(pager.page_size);
             if (!pager.last_key.isEmpty()) query = query.startAt(pager.last_key);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshots) {
-                    if (ref.equals(TXT_BOOKS_DIR))
+                    if (ref.equals(E_BOOKS_DIR))
+                        for (DataSnapshot snapshot : snapshots.getChildren()) {
+                            if (pager.last_key.equals(snapshots.getKey())) continue;
+                            Book book = ebookSnapshotToBook(snapshot);
+                            if (book != null) list.add(book);
+                        }
+                    else if (ref.equals(TXT_BOOKS_DIR))
                         for (DataSnapshot snapshot : snapshots.getChildren()) {
                             if (pager.last_key.equals(snapshots.getKey())) continue;
                             Book book = txtSnapshotToBook(snapshot);
@@ -158,7 +187,10 @@ public class LibraryRepository {
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (ref.equals(TXT_BOOKS_DIR)) {
+                    if (ref.equals(E_BOOKS_DIR)) {
+                        Book b = ebookSnapshotToBook(snapshot);
+                        if (b != null) book.setValue(b);
+                    } else if (ref.equals(TXT_BOOKS_DIR)) {
                         Book b = txtSnapshotToBook(snapshot);
                         if (b != null) book.setValue(b);
                     } else if (ref.equals(PDF_BOOKS_DIR)) {
@@ -182,7 +214,8 @@ public class LibraryRepository {
     public void search(String query) {
         try {
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(CONSTANTS.BOOKS_SEARCH_DIR);
-            myRef.keepSynced(true);
+            if (App.newVersion) myRef.keepSynced(true);
+            else myRef.keepSynced(false);
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshots) {

@@ -46,7 +46,11 @@ public class LibrarySearchFragment extends BaseFragment {
         initSearchRecycler();
         model = new ViewModelProvider(this, viewModelFactory).get(LibrarySearchModel.class);
         model.data.observe(this, results -> {
-            if (results == null || adapter == null) return;
+            if (results == null || adapter == null) {
+                uiState.searchResults.set(0);
+                return;
+            }
+            ;
             this.list.clear();
             uiState.searchResults.set(results.size());
             networkState(CONSTANTS.LOADED);
@@ -59,6 +63,7 @@ public class LibrarySearchFragment extends BaseFragment {
         pagination.observer.observe(this, pager -> {
             if (pager == null) return;
             int start = pager.current_page;
+            if (start >= model.data.getValue().size()) return;
             int end = pager.last_page;
             ArrayList<Book> temp = new ArrayList<>();
             for (int i = start; i < end; i++) {
@@ -86,9 +91,7 @@ public class LibrarySearchFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-
         requestFocus(binding.search);
-
         uiState.showFooter.set(false);
         uiState.showHeader.set(false);
     }
@@ -96,7 +99,7 @@ public class LibrarySearchFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        uiState.searchResults.set(0);
+        uiState.searchResults.set(-1);
         uiState.showFooter.set(true);
         uiState.showHeader.set(true);
     }

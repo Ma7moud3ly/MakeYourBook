@@ -13,12 +13,10 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.ma7moud3ly.makeyourbook.R;
-import com.ma7moud3ly.makeyourbook.data.Story;
 import com.ma7moud3ly.makeyourbook.data.TextSearch;
-import com.ma7moud3ly.makeyourbook.repositories.ReaderRepository;
+import com.ma7moud3ly.makeyourbook.repositories.TextReaderRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,12 +27,11 @@ public class TextReaderViewModel extends ViewModel {
     public MutableLiveData<ArrayList<String>> chapters;
     public MutableLiveData<Integer> page = new MutableLiveData<>();
     public MutableLiveData<TextSearch> storySearch = new MutableLiveData<>();
-    public MutableLiveData<Story> story = new MutableLiveData<>();
     public boolean hasPageNext = true;
-    private ReaderRepository repo;
+    private TextReaderRepository repo;
 
     @Inject
-    public TextReaderViewModel(ReaderRepository repo) {
+    public TextReaderViewModel(TextReaderRepository repo) {
         this.repo = repo;
         chapters = repo.data;
     }
@@ -78,14 +75,6 @@ public class TextReaderViewModel extends ViewModel {
         builder.show();
     }
 
-
-    public boolean notEmptyOrNull() {
-        return chapters.getValue() != null || chapters.getValue().size() != 0;
-    }
-
-    public boolean notTheSameBook(String bookId) {
-        return story == null || bookId.equals(story.getValue().id) == false;
-    }
 
     public boolean isStorySearch() {
         return storySearch.getValue() != null && storySearch.getValue().position != null;

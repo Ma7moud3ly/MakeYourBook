@@ -52,8 +52,9 @@ public class AboutAuthorFragment extends BaseFragment {
             if (author != null) {
                 networkState(CONSTANTS.LOADED);
                 binding.setAuthor(author);
-                int all = author.txt_books.size() + author.pdf_books.size();
+                int all = author.e_books.size() + author.txt_books.size() + author.pdf_books.size();
                 binding.booksAll.setText(getText(R.string.all_books) + " : " + all);
+                binding.booksE.setText(getText(R.string.e_books) + " : " + author.e_books.size());
                 binding.booksTxt.setText(getText(R.string.text_books) + " : " + author.txt_books.size());
                 binding.booksPdf.setText(getText(R.string.pdf_books) + " : " + author.pdf_books.size());
                 model.initBooks(CONSTANTS.ALL_BOOKS);
@@ -65,9 +66,10 @@ public class AboutAuthorFragment extends BaseFragment {
         getAuthor();
 
         binding.booksAll.setOnClickListener(v -> filterBooks(CONSTANTS.ALL_BOOKS));
+        binding.booksE.setOnClickListener(v -> filterBooks(CONSTANTS.E_BOOKS));
         binding.booksTxt.setOnClickListener(v -> filterBooks(CONSTANTS.TXT_BOOKS));
         binding.booksPdf.setOnClickListener(v -> filterBooks(CONSTANTS.PDF_BOOKS));
-        binding.scrollTop.setOnClickListener(v -> {
+        binding.authorSmallImage.setOnClickListener(v -> {
             binding.aboutAuthorContent.scrollTo(0, 0);
         });
         binding.more.setOnClickListener(v -> {
@@ -84,7 +86,6 @@ public class AboutAuthorFragment extends BaseFragment {
 
     private void expandUi(boolean b) {
         binding.authorSmallImage.setVisibility(b ? View.GONE : View.VISIBLE);
-        binding.scrollTop.setVisibility(b ? View.GONE : View.VISIBLE);
         binding.title.setGravity(b ? Gravity.CENTER : Gravity.START);
     }
 
@@ -117,6 +118,11 @@ public class AboutAuthorFragment extends BaseFragment {
     }
 
     private void loadMore() {
+        if(model.books.size()==0){
+            list.addAll(new ArrayList<>());
+            adapter.notifyDataSetChanged();
+            return;
+        }
         if (index >= model.books.size()) {
             binding.more.setVisibility(View.GONE);
             return;

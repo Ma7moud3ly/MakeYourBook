@@ -20,6 +20,7 @@ public class CONSTANTS {
     public static final String HOME_DIR = "home";
     public static final String TXT_BOOKS_DIR = "text-books";
     public static final String PDF_BOOKS_DIR = "pdf-books";
+    public static final String E_BOOKS_DIR = "e-books";
     public static final String QUOTES_DIR = "quotes";
     public static final String ARTICLES_DIR = "articles/8992";
     public static final String AUTHORS_DIR = "authors";
@@ -29,16 +30,18 @@ public class CONSTANTS {
     public static final String AUTHORS_IMGS_DIR = "authors-images";
     public static final String ARTICLES_IMGS_DIR = "articles/8992";
 
-    public static final int LIB_MOST_READ = 1;
+    public static final int LIB_MOST_READ = 0;
+    public static final int LIB_E_BOOKS = 1;
     public static final int LIB_TXT_BOOKS = 2;
     public static final int LIB_PDF_BOOKS = 3;
     public static final int LIB_AUTHORS = 4;
     public static final int LIB_ARTICLES = 5;
     public static final int LIB_QUOTES = 6;
 
-    public static final int TXT_BOOKS = 10;
-    public static final int PDF_BOOKS = 20;
-    public static final int ALL_BOOKS = 30;
+    public static final int E_BOOKS = 10;
+    public static final int TXT_BOOKS = 11;
+    public static final int PDF_BOOKS = 12;
+    public static final int ALL_BOOKS = 13;
 
     public static  String DOWNLOAD_BASE;
 

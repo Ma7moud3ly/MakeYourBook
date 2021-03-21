@@ -55,6 +55,8 @@ public class ArticlesRepository {
 
     public void count() {
         Query query = FirebaseDatabase.getInstance().getReference(ARTICLES_DIR);
+        if (App.newVersion) query.keepSynced(true);
+        else query.keepSynced(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,7 +75,8 @@ public class ArticlesRepository {
         try {
             List<Article> list = new ArrayList<>();
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(ARTICLES_DIR);
-            myRef.keepSynced(true);
+            if(App.newVersion)myRef.keepSynced(true);
+            else  myRef.keepSynced(false);
             Query query = myRef.orderByKey().limitToFirst(pager.page_size);
             if (!pager.last_key.isEmpty()) query = query.startAt(pager.last_key);
             query.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -10,6 +10,7 @@ package com.ma7moud3ly.makeyourbook.activities;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ma7moud3ly.makeyourbook.App;
@@ -26,8 +28,10 @@ import com.ma7moud3ly.makeyourbook.R;
 import com.ma7moud3ly.makeyourbook.di.ActivityGraph;
 import com.ma7moud3ly.makeyourbook.di.ViewModelFactory;
 import com.ma7moud3ly.makeyourbook.interfaces.ActivityCallbacks;
+import com.ma7moud3ly.makeyourbook.models.AboutViewModel;
 import com.ma7moud3ly.makeyourbook.observables.UiState;
 import com.ma7moud3ly.makeyourbook.util.CONSTANTS;
+import com.ma7moud3ly.makeyourbook.util.RootHelper;
 import com.ma7moud3ly.ustore.UPref;
 
 import javax.inject.Inject;
@@ -145,18 +149,11 @@ public class BaseActivity extends AppCompatActivity implements ActivityCallbacks
         }
     }
 
-    public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        App.l("Refreshed token: " + refreshedToken);
-
-    }
-
     public void subscribeToTopics(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(task -> {
                     pref.put("notify-" + topic, true);
-                    App.l(topic + " sub : " + task.isSuccessful());
+                    //App.l(topic + " sub : " + task.isSuccessful());
                 });
     }
 
@@ -164,7 +161,7 @@ public class BaseActivity extends AppCompatActivity implements ActivityCallbacks
         FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
                 .addOnCompleteListener(task -> {
                     pref.put("notify-" + topic, false);
-                    App.l(topic + " un-sub : " + task.isSuccessful());
+                    //App.l(topic + " un-sub : " + task.isSuccessful());
                 });
     }
 

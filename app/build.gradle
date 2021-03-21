@@ -10,8 +10,8 @@ android {
         applicationId "com.ma7moud3ly.makeyourbook"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 18
-        versionName "7.0"
+        versionCode 21
+        versionName "8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,7 +51,9 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-
+    implementation("com.mikepenz:materialdrawer:6.0.9@aar") {
+        transitive = true
+    }
     //dagger
     implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"

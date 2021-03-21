@@ -1,10 +1,12 @@
 package com.ma7moud3ly.makeyourbook.observables;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.TypedValue;
@@ -16,9 +18,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.ma7moud3ly.makeyourbook.BR;
 import com.ma7moud3ly.makeyourbook.R;
-import com.ma7moud3ly.makeyourbook.activities.BaseActivity;
-import com.ma7moud3ly.makeyourbook.activities.MainActivity;
-import com.ma7moud3ly.makeyourbook.fragments.Reader.TextSearchFragment;
 
 import javax.inject.Inject;
 
@@ -32,7 +31,7 @@ import androidx.databinding.ObservableField;
 public class ReaderUi extends BaseObservable {
     public ObservableField<Integer> textAlignment = new ObservableField<>();
     public ObservableField<Integer> textColor = new ObservableField<>();
-    private ObservableField<Integer> textSize = new ObservableField<>();
+    public int textSize;
     public ObservableField<Typeface> typeface = new ObservableField<>();
     public ObservableField<Boolean> isItalic = new ObservableField<>();
     public ObservableField<Boolean> isBold = new ObservableField<>();
@@ -43,7 +42,8 @@ public class ReaderUi extends BaseObservable {
     public int selectedFont = 0;
 
     @Inject
-    public ReaderUi(){}
+    public ReaderUi() {
+    }
 
     public void align(View v, int direction) {
         textAlignment.set(direction);
@@ -70,14 +70,13 @@ public class ReaderUi extends BaseObservable {
 
     @Bindable
     public int getTextSize() {
-        return textSize.get();
+        return textSize;
     }
 
     public void setTextSize(int value) {
-        if (textSize.get() == null || textSize.get() != value) {
-            textSize.set(value);
-            notifyPropertyChanged(BR.textSize);
-        }
+        textSize = value;
+        notifyPropertyChanged(BR.textSize);
+
     }
 
     public static final int[] FONTS_SIZE = {14, 16, 18, 20, 22, 25, 30, 35};

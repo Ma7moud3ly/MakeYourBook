@@ -1,10 +1,12 @@
 package com.ma7moud3ly.makeyourbook.adapters;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -45,14 +47,18 @@ public class CollectionsRecyclerAdapter extends RecyclerView.Adapter<Collections
     @NonNull
     @Override
     public void onBindViewHolder(@NonNull CollectionsRecyclerAdapter.MyViewHolder holder, int position) {
-        if (list != null && position < list.size()) {
-            Collection collection = list.get(position);
-            if (collection.id.equals(""))
-                holder.binding.more.setOnClickListener(v -> holder.uiState.library(holder.binding.more));
-            else
-                holder.binding.more.setOnClickListener(v -> holder.uiState.openAuthor(holder.binding.more, collection.id));
-            holder.binding.label.setText(collection.title);
-            initRecycler(holder.binding.recycler,collection.books);
+        try {
+            if (list != null && position < list.size()) {
+                Collection collection = list.get(position);
+                if (collection.id.equals(""))
+                    holder.binding.more.setOnClickListener(v -> holder.uiState.library(holder.binding.more));
+                else
+                    holder.binding.more.setOnClickListener(v -> holder.uiState.openAuthor(holder.binding.more, collection.id));
+                holder.binding.label.setText(collection.title);
+                initRecycler(holder.binding.recycler, collection.books);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -62,10 +68,10 @@ public class CollectionsRecyclerAdapter extends RecyclerView.Adapter<Collections
         return list.size();
     }
 
-    private void initRecycler(RecyclerView recyclerView,List<Book>books){
+    private void initRecycler(RecyclerView recyclerView, List<Book> books) {
         recyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(recyclerView.getContext(), 1, GridLayoutManager.HORIZONTAL, false);
-        BookRecyclerAdapter adapter = new BookRecyclerAdapter(books,false);
+        BookRecyclerAdapter adapter = new BookRecyclerAdapter(books, false);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }

@@ -1,10 +1,12 @@
 package com.ma7moud3ly.makeyourbook.repositories;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
  */
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,6 +57,7 @@ public class AuthorsRepository {
                     book.author = author.name;
                     book.author_id = author.id;
                     book.author_img = author.img;
+                    book.type = 12;
                     pdf_books.add(book);
                 }
             }
@@ -68,12 +71,27 @@ public class AuthorsRepository {
                     book.author = author.name;
                     book.author_id = author.id;
                     book.author_img = author.img;
-                    book.is_text = true;
+                    book.type = 11;
                     txt_books.add(book);
+                }
+            }
+            List<Book> e_books = new ArrayList<>();
+            if (snapshot.hasChild("e_books")) {
+                for (DataSnapshot snapshot1 : snapshot.child("e_books").getChildren()) {
+                    Book book = new Book();
+                    book.id = snapshot1.child("id").getValue().toString();
+                    book.img = BOOKS_IMGS_DIR + "/" + book.id + ".jpg";
+                    book.name = snapshot1.child("name").getValue().toString();
+                    book.author = author.name;
+                    book.author_id = author.id;
+                    book.author_img = author.img;
+                    book.type = 10;
+                    e_books.add(book);
                 }
             }
             author.pdf_books = pdf_books;
             author.txt_books = txt_books;
+            author.e_books = e_books;
             return author;
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,6 +101,8 @@ public class AuthorsRepository {
 
     public void count() {
         Query query = FirebaseDatabase.getInstance().getReference(AUTHORS_DIR);
+        if (App.newVersion) query.keepSynced(true);
+        else query.keepSynced(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -91,7 +111,7 @@ public class AuthorsRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-               App.l(databaseError.getMessage());
+                App.l(databaseError.getMessage());
             }
         });
     }
@@ -100,6 +120,8 @@ public class AuthorsRepository {
         try {
             List<Author> list = new ArrayList<>();
             DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(AUTHORS_DIR);
+            if (App.newVersion) myRef.keepSynced(true);
+            else myRef.keepSynced(false);
             Query query = myRef.orderByKey().limitToFirst(pager.page_size);
             if (!pager.last_key.isEmpty()) query = query.startAt(pager.last_key);
             query.addListenerForSingleValueEvent(new ValueEventListener() {

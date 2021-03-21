@@ -1,6 +1,7 @@
 package com.ma7moud3ly.makeyourbook.models;
 /**
  * اصنع كتابك Make your Book
+ *
  * @author Mahmoud Aly
  * engma7moud3ly@gmail.com
  * @since sep 2020
@@ -22,7 +23,7 @@ import androidx.lifecycle.ViewModel;
 
 public class AuthorsViewModel extends ViewModel {
     public MutableLiveData<List<Author>> data = new MutableLiveData<>();
-    public List<Book>books=new ArrayList<>();
+    public List<Book> books = new ArrayList<>();
     public MutableLiveData<Long> items_count = new MutableLiveData<>();
     public MutableLiveData<Author> author = new MutableLiveData<>();
     private AuthorsRepository repo;
@@ -37,11 +38,14 @@ public class AuthorsViewModel extends ViewModel {
 
     public void initBooks(int load_from) {
         books.clear();
-        if (load_from == CONSTANTS.TXT_BOOKS) {
+        if (load_from == CONSTANTS.E_BOOKS) {
+            books.addAll(author.getValue().e_books);
+        } else if (load_from == CONSTANTS.TXT_BOOKS) {
             books.addAll(author.getValue().txt_books);
         } else if (load_from == CONSTANTS.PDF_BOOKS) {
             books.addAll(author.getValue().pdf_books);
         } else if (load_from == CONSTANTS.ALL_BOOKS) {
+            books.addAll(author.getValue().e_books);
             books.addAll(author.getValue().txt_books);
             books.addAll(author.getValue().pdf_books);
         }

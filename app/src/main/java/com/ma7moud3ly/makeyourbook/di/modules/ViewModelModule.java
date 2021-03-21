@@ -5,6 +5,7 @@ import com.ma7moud3ly.makeyourbook.di.ViewModelFactory;
 import com.ma7moud3ly.makeyourbook.models.ArticlesViewModel;
 import com.ma7moud3ly.makeyourbook.models.BookViewModel;
 import com.ma7moud3ly.makeyourbook.models.AuthorsViewModel;
+import com.ma7moud3ly.makeyourbook.models.EbookReaderViewModel;
 import com.ma7moud3ly.makeyourbook.models.FavBooksViewModel;
 import com.ma7moud3ly.makeyourbook.models.HomeViewModel;
 import com.ma7moud3ly.makeyourbook.models.LibrarySearchModel;
@@ -53,11 +54,14 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ArticlesViewModel.class)
     abstract ViewModel provideArticlesViewModel(ArticlesViewModel viewModel);
-
     @Binds
     @IntoMap
     @ViewModelKey(TextReaderViewModel.class)
     abstract ViewModel provideReaderViewModel(TextReaderViewModel viewModel);
+    @Binds
+    @IntoMap
+    @ViewModelKey(EbookReaderViewModel.class)
+    abstract ViewModel provideEReaderViewModel(EbookReaderViewModel viewModel);
     @Binds
     @IntoMap
     @ViewModelKey(QuotesViewModel.class)
